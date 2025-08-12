@@ -299,6 +299,7 @@
         overflow: hidden;
         transition: transform 0.25s ease, box-shadow 0.25s ease,
           background 0.3s ease;
+        will-change: transform;
       }
       .glass-card::after {
         content: '';
@@ -384,7 +385,8 @@
       /* Focus-visible ring for accessibility */
       .glass-card:focus-visible,
       .social-chip:focus-visible,
-      #themeToggle:focus-visible {
+      #themeToggle:focus-visible,
+      #motionToggle:focus-visible {
         outline: 2px solid rgba(99, 102, 241, 0.6);
         outline-offset: 2px;
         box-shadow: 0 0 0 6px rgba(99, 102, 241, 0.18);
@@ -416,6 +418,70 @@
       .dark #themeToggle .theme-icon-moon {
         opacity: 1;
         transform: rotate(0) scale(1);
+      }
+
+      /* Motion toggle icon cross-fade + tap */
+      #motionToggle {
+        position: relative;
+        transition: transform 160ms ease, background 0.3s ease,
+          border-color 0.3s ease;
+        min-width: 100px;
+      }
+      #motionToggle:active {
+        transform: scale(0.96);
+      }
+      #motionToggle .motion-icon {
+        opacity: 0;
+        transition: opacity 180ms ease, transform 220ms ease;
+        pointer-events: none;
+      }
+      .motion-off #motionToggle {
+        background: var(--glass-bg);
+        border-color: var(--glass-stroke);
+      }
+      .motion-off #motionToggle .motion-icon-off {
+        opacity: 1;
+      }
+      .motion-off #motionToggle .motion-icon-on {
+        display: none;
+      }
+      .motion-on #motionToggle {
+        background: linear-gradient(
+          to bottom right,
+          rgba(34, 197, 94, 0.2),
+          rgba(34, 197, 94, 0.1)
+        );
+        border-color: rgba(34, 197, 94, 0.4);
+        box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.2),
+          0 10px 30px var(--glass-shadow);
+        animation: holo-activate 0.4s ease-out;
+      }
+      .motion-on #motionToggle .motion-icon-off {
+        display: none;
+      }
+      .motion-on #motionToggle .motion-icon-on {
+        opacity: 1;
+        color: rgb(34, 197, 94);
+      }
+      .motion-on #motionToggle span {
+        color: rgb(34, 197, 94);
+      }
+
+      /* Motion toggle activation animation */
+      @keyframes holo-activate {
+        0% {
+          transform: scale(1);
+          box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+        }
+        50% {
+          transform: scale(1.02);
+          box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2);
+        }
+        100% {
+          transform: scale(1);
+          box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.2),
+            0 10px 30px var(--glass-shadow);
+        }
       }
 
       /* Social chips micro-interaction */
@@ -529,8 +595,21 @@
     <div class="container mx-auto px-4 py-8 max-w-md relative z-10">
       <div class="flex justify-end gap-2 mb-6">
         <button
+          id="motionToggle"
+          class="relative px-3 py-2 glass soft glass-chip text-high hover:brightness-110 transition-all duration-300 flex items-center gap-2"
+          aria-label="Toggle holograma effects"
+          style="display: none"
+        >
+          <i class="fas fa-mobile-alt text-sm motion-icon motion-icon-off"></i>
+          <i
+            class="fas fa-mobile-screen-button text-sm motion-icon motion-icon-on"
+          ></i>
+          <span class="text-xs font-medium">Holograma</span>
+        </button>
+
+        <button
           id="themeToggle"
-          class="relative p-2 glass soft glass-chip text-high hover:brightness-110 transition-all duration-300"
+          class="relative p-4 glass soft glass-chip text-high hover:brightness-110 transition-all duration-300"
           aria-label="Toggle theme"
         >
           <i class="fas fa-sun text-lg theme-icon theme-icon-sun"></i>
@@ -649,16 +728,262 @@
     </div>
 
     <script>
+      // Device Orientation Parallax System
+      class DeviceOrientationParallax {
+        constructor() {
+          this.orientation = null;
+          this.error = null;
+          this.isActive = false;
+          this.onDeviceOrientationHandler = this.onDeviceOrientation.bind(this);
+
+          // Motion state classes for UI
+          this.motionStateClasses = {
+            off: 'motion-off',
+            on: 'motion-on',
+          };
+
+          // Initialize with motion off
+          document.documentElement.classList.add(this.motionStateClasses.off);
+        }
+
+        roundAngle(angle) {
+          if (typeof angle !== 'number') return angle;
+          return +angle.toFixed(2);
+        }
+
+        onDeviceOrientation(event) {
+          const angles = {
+            alpha: this.roundAngle(event.alpha),
+            beta: this.roundAngle(event.beta),
+            gamma: this.roundAngle(event.gamma),
+            absolute: event.absolute,
+          };
+
+          this.orientation = angles;
+          this.updateParallaxEffects(angles);
+        }
+
+        updateParallaxEffects(angles) {
+          if (
+            !angles ||
+            typeof angles.beta !== 'number' ||
+            typeof angles.gamma !== 'number'
+          ) {
+            return;
+          }
+
+          // Normalize the angles for smoother parallax
+          // Beta: -180 to 180 (device tilt forward/backward)
+          // Gamma: -90 to 90 (device tilt left/right)
+          const normalizedBeta = Math.max(-45, Math.min(45, angles.beta)) / 45; // -1 to 1
+          const normalizedGamma =
+            Math.max(-45, Math.min(45, angles.gamma)) / 45; // -1 to 1
+
+          // Background parallax (more subtle)
+          const bgOffsetX = normalizedGamma * 12; // max 12px offset
+          const bgOffsetY = normalizedBeta * 8; // max 8px offset
+
+          // Update CSS variables for background
+          const liquid = document.querySelector('.liquid-bg');
+          if (liquid) {
+            liquid.style.setProperty('--bg-tx', `${bgOffsetX.toFixed(2)}px`);
+            liquid.style.setProperty('--bg-ty', `${bgOffsetY.toFixed(2)}px`);
+          }
+
+          // Card parallax (more pronounced)
+          const cardOffsetX = normalizedGamma * 8; // max 8px offset
+          const cardOffsetY = normalizedBeta * 6; // max 6px offset
+
+          // Apply parallax to glass cards
+          const cards = document.querySelectorAll('.glass-card');
+          cards.forEach((card, index) => {
+            // Different layers move at different speeds
+            const multiplier = 1 + index * 0.1; // Slight variation per card
+            const offsetX = cardOffsetX * multiplier;
+            const offsetY = cardOffsetY * multiplier;
+
+            card.style.transform = `translate3d(${offsetX.toFixed(
+              2
+            )}px, ${offsetY.toFixed(2)}px, 0)`;
+          });
+
+          // Blob parallax (most pronounced)
+          const blobs = document.querySelectorAll('.blob');
+          blobs.forEach((blob, index) => {
+            const multiplier = 0.8 + index * 0.15; // Different speed per blob
+            const offsetX = normalizedGamma * 20 * multiplier;
+            const offsetY = normalizedBeta * 15 * multiplier;
+
+            // Get existing transform and add our parallax
+            const currentTransform = blob.style.transform || '';
+            const parallaxTransform = `translate3d(${offsetX.toFixed(
+              2
+            )}px, ${offsetY.toFixed(2)}px, 0)`;
+
+            // If there's an existing transform, we need to combine them
+            if (currentTransform.includes('translate3d')) {
+              blob.style.transform = currentTransform.replace(
+                /translate3d\([^)]*\)/,
+                parallaxTransform
+              );
+            } else {
+              blob.style.transform =
+                `${parallaxTransform} ${currentTransform}`.trim();
+            }
+          });
+        }
+
+        async requestAccess() {
+          if (!window.DeviceOrientationEvent) {
+            this.error = new Error(
+              'Device orientation event is not supported by your browser'
+            );
+            return false;
+          }
+
+          // Check if permission is required (iOS 13+)
+          if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+            let permission;
+            try {
+              permission = await DeviceOrientationEvent.requestPermission();
+            } catch (err) {
+              this.error = new Error(
+                err?.message ||
+                  'Unknown error requesting device orientation permission'
+              );
+              console.error('Permission request failed:', err);
+              return false;
+            }
+
+            if (permission !== 'granted') {
+              this.error = new Error(
+                'Device orientation permission was denied'
+              );
+              console.warn('Permission denied:', permission);
+              return false;
+            }
+          }
+
+          // Add event listener
+          window.addEventListener(
+            'deviceorientation',
+            this.onDeviceOrientationHandler,
+            { passive: true }
+          );
+          this.isActive = true;
+
+          // Update UI state
+          document.documentElement.classList.remove(
+            this.motionStateClasses.off
+          );
+          document.documentElement.classList.add(this.motionStateClasses.on);
+
+          return true;
+        }
+
+        revokeAccess() {
+          window.removeEventListener(
+            'deviceorientation',
+            this.onDeviceOrientationHandler
+          );
+          this.orientation = null;
+          this.isActive = false;
+
+          // Reset all parallax effects
+          const liquid = document.querySelector('.liquid-bg');
+          if (liquid) {
+            liquid.style.setProperty('--bg-tx', '0px');
+            liquid.style.setProperty('--bg-ty', '0px');
+          }
+
+          // Reset card transforms
+          const cards = document.querySelectorAll('.glass-card');
+          cards.forEach((card) => {
+            card.style.transform = '';
+          });
+
+          // Reset blob transforms (keep their animations)
+          const blobs = document.querySelectorAll('.blob');
+          blobs.forEach((blob) => {
+            blob.style.transform = '';
+          });
+
+          // Update UI state
+          document.documentElement.classList.remove(this.motionStateClasses.on);
+          document.documentElement.classList.add(this.motionStateClasses.off);
+        }
+
+        // Check if device orientation is supported and if permission is needed
+        static isSupported() {
+          return typeof window.DeviceOrientationEvent !== 'undefined';
+        }
+
+        static needsPermission() {
+          return (
+            typeof DeviceOrientationEvent !== 'undefined' &&
+            typeof DeviceOrientationEvent.requestPermission === 'function'
+          );
+        }
+
+        static isIOS() {
+          return (
+            /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+            (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+          );
+        }
+      }
+
+      // Main app initialization
       let themeToggle;
+      let motionToggle;
+      let deviceParallax;
       const html = document.documentElement;
 
       document.addEventListener('DOMContentLoaded', function () {
         themeToggle = document.getElementById('themeToggle');
+        motionToggle = document.getElementById('motionToggle');
 
+        // Initialize device orientation parallax
+        deviceParallax = new DeviceOrientationParallax();
+
+        // Show motion toggle only if device orientation is supported
+        if (DeviceOrientationParallax.isSupported()) {
+          motionToggle.style.display = 'block';
+        }
+
+        // Theme toggle functionality
         themeToggle.addEventListener('click', () => {
           html.classList.toggle('dark');
           const isDark = html.classList.contains('dark');
           localStorage.setItem('colorMode', isDark ? 'dark' : 'light');
+        });
+
+        // Motion toggle functionality
+        motionToggle.addEventListener('click', async (event) => {
+          // Prevent any default behavior
+          event.preventDefault();
+
+          if (deviceParallax.isActive) {
+            deviceParallax.revokeAccess();
+          } else {
+            try {
+              const success = await deviceParallax.requestAccess();
+              if (!success && deviceParallax.error) {
+                console.warn(
+                  'Motion access failed:',
+                  deviceParallax.error.message
+                );
+                // Show user-friendly error message
+                alert(`Motion access failed: ${deviceParallax.error.message}`);
+              }
+            } catch (error) {
+              console.error(
+                'Unexpected error requesting motion access:',
+                error
+              );
+              alert('Failed to enable motion effects. Please try again.');
+            }
+          }
         });
 
         window
@@ -681,7 +1006,7 @@
           document.body.classList.add('loaded');
         }
 
-        // Gentle background parallax using CSS variables
+        // Gentle background parallax using CSS variables (mouse-based fallback)
         const liquid = document.querySelector('.liquid-bg');
         if (liquid && !reduceMotion) {
           let rafId = null;
@@ -691,6 +1016,9 @@
             currY = 0;
 
           const onMove = (e) => {
+            // Only apply mouse parallax if device orientation is not active
+            if (deviceParallax.isActive) return;
+
             const xRatio = e.clientX / window.innerWidth - 0.5;
             const yRatio = e.clientY / window.innerHeight - 0.5;
             targetX = xRatio * 6; // max 6px offset
@@ -699,6 +1027,12 @@
           };
 
           const tick = () => {
+            // Only apply mouse parallax if device orientation is not active
+            if (deviceParallax.isActive) {
+              rafId = null;
+              return;
+            }
+
             const k = 0.08; // easing
             currX += (targetX - currX) * k;
             currY += (targetY - currY) * k;
