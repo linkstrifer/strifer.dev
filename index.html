@@ -1,30 +1,228 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Strifer.dev</title>
+    <title>@LinkStrifer - Link Tree</title>
+    <meta
+      name="description"
+      content="Encuentra todos los enlaces de LinkStrifer en un solo lugar"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <style>
+      .gradient-bg {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+      .dark .gradient-bg {
+        background: linear-gradient(135deg, #1e3a8a 0%, #312e81 100%);
+      }
+      .link-hover {
+        transition: all 0.3s ease;
+      }
+      .link-hover:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      }
+      .dark .link-hover:hover {
+        box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
+      }
+      .highlight-link {
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        border: 2px solid #fbbf24;
+        position: relative;
+        overflow: hidden;
+      }
+      .dark .highlight-link {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        border: 2px solid #f59e0b;
+      }
+      .highlight-link::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        animation: shine 3s infinite;
+      }
+      @keyframes shine {
+        0% {
+          transform: translateX(-100%) translateY(-100%) rotate(45deg);
+        }
+        100% {
+          transform: translateX(100%) translateY(100%) rotate(45deg);
+        }
+      }
+      .highlight-link .highlight-text {
+        font-weight: 700;
+        color: white;
+      }
+    </style>
   </head>
-  <body>
-    <h1>LinkStrifer.dev</h1>
-    <h2>Experiments</h2>
-    <ul>
-      <li>
-        <a href="http://strifer.link/html-video-autoplay-test/"
-          >HTML video autoplay test</a
+  <body
+    class="min-h-screen gradient-bg transition-all duration-300 flex items-center"
+  >
+    <div class="container mx-auto px-4 py-8 max-w-md">
+      <!-- Theme Toggle -->
+      <div class="flex justify-end mb-6">
+        <button
+          id="themeToggle"
+          class="p-2 rounded-full bg-white/20 dark:bg-black/20 text-white hover:bg-white/30 dark:hover:bg-black/30 transition-all duration-300"
+          aria-label="Toggle theme"
         >
-      </li>
-      <li>
-        <a href="http://strifer.link/flex-vertical-auto-margin/"
-          >Flex + Vertical auto margin (it works!)</a
+          <i class="fas fa-sun text-lg dark:hidden"></i>
+          <i class="fas fa-moon text-lg hidden dark:block"></i>
+        </button>
+      </div>
+
+      <!-- Profile Section -->
+      <div class="text-center mb-8">
+        <div
+          class="w-24 h-24 mx-auto mb-4 bg-white/20 dark:bg-black/20 rounded-full flex items-center justify-center"
         >
-      </li>
-      <li>
-        <a href="http://strifer.link/html-native-dialog-poc/">
-          dialog HTML Native Element
+          <i class="fas fa-user text-white text-3xl"></i>
+        </div>
+        <h1 class="text-2xl font-bold text-white mb-2">@LinkStrifer</h1>
+        <p class="text-white/80 text-sm mb-4">
+          Desarrollador y Creador de Contenido.
+        </p>
+
+        <!-- Social Media Icons -->
+        <div class="flex justify-center space-x-4 mb-6">
+          <a
+            href="https://youtube.com/@linkstrifer1"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-10 h-10 bg-white/20 dark:bg-black/20 rounded-full flex items-center justify-center text-white hover:bg-red-500 transition-all duration-300"
+            aria-label="YouTube"
+          >
+            <i class="fab fa-youtube"></i>
+          </a>
+          <a
+            href="https://tiktok.com/@linkstrifer"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-10 h-10 bg-white/20 dark:bg-black/20 rounded-full flex items-center justify-center text-white hover:bg-black transition-all duration-300"
+            aria-label="TikTok"
+          >
+            <i class="fab fa-tiktok"></i>
+          </a>
+          <a
+            href="https://www.instagram.com/linkstrifer/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-10 h-10 bg-white/20 dark:bg-black/20 rounded-full flex items-center justify-center text-white hover:bg-gradient-to-br hover:from-purple-500 hover:to-pink-500 transition-all duration-300"
+            aria-label="Instagram"
+          >
+            <i class="fab fa-instagram"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Links Section -->
+      <div class="space-y-4">
+        <a
+          href="https://productos.strifer.link/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="block w-full p-4 highlight-link rounded-xl text-center font-semibold link-hover backdrop-blur-sm"
+        >
+          <span class="highlight-text">🔥 Productos Recomendados 🔥</span>
         </a>
-      </li>
-    </ul>
+
+        <a
+          href="https://youtube.com/@linkstrifer1"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="block w-full p-4 bg-white/90 dark:bg-gray-800/90 rounded-xl text-center font-semibold text-gray-800 dark:text-white link-hover backdrop-blur-sm"
+        >
+          <i class="fab fa-youtube mr-2 text-red-600 dark:text-red-400"></i>
+          YouTube
+        </a>
+
+        <a
+          href="https://tiktok.com/@linkstrifer"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="block w-full p-4 bg-white/90 dark:bg-gray-800/90 rounded-xl text-center font-semibold text-gray-800 dark:text-white link-hover backdrop-blur-sm"
+        >
+          <i class="fab fa-tiktok mr-2 text-black dark:text-white"></i>
+          TikTok
+        </a>
+
+        <a
+          href="https://www.instagram.com/linkstrifer/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="block w-full p-4 bg-white/90 dark:bg-gray-800/90 rounded-xl text-center font-semibold text-gray-800 dark:text-white link-hover backdrop-blur-sm"
+        >
+          <i class="fab fa-instagram mr-2 text-pink-600 dark:text-pink-400"></i>
+          Instagram
+        </a>
+
+        <a
+          href="https://elordendemarvel.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="block w-full p-4 bg-white/90 dark:bg-gray-800/90 rounded-xl text-center font-semibold text-gray-800 dark:text-white link-hover backdrop-blur-sm"
+        >
+          <i class="fas fa-mask mr-2 text-red-600 dark:text-red-400"></i>
+          Línea de Tiempo de Marvel
+        </a>
+
+        <a
+          href="mailto:biz@strifer.link"
+          class="block w-full p-4 bg-white/90 dark:bg-gray-800/90 rounded-xl text-center font-semibold text-gray-800 dark:text-white link-hover backdrop-blur-sm"
+        >
+          <i class="fas fa-envelope mr-2 text-blue-600 dark:text-blue-400"></i>
+          Negocios?
+        </a>
+      </div>
+
+      <!-- Footer -->
+      <div class="text-center mt-8 text-white/60 text-xs">
+        <p>&copy; 2025 LinkStrifer. Todos los derechos reservados.</p>
+      </div>
+    </div>
+
+    <script>
+      const themeToggle = document.getElementById('themeToggle');
+      const html = document.documentElement;
+
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme) {
+        html.classList.toggle('dark', savedTheme === 'dark');
+      } else {
+        const prefersDark = window.matchMedia(
+          '(prefers-color-scheme: dark)'
+        ).matches;
+        html.classList.toggle('dark', prefersDark);
+      }
+
+      themeToggle.addEventListener('click', () => {
+        html.classList.toggle('dark');
+        const isDark = html.classList.contains('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      });
+
+      window
+        .matchMedia('(prefers-color-scheme: dark)')
+        .addEventListener('change', (e) => {
+          if (!localStorage.getItem('theme')) {
+            html.classList.toggle('dark', e.matches);
+          }
+        });
+    </script>
   </body>
 </html>
