@@ -16,20 +16,8 @@
     />
     <script>
       (function () {
-        const themes = ['default', 'xbox', 'playstation', 'nintendo', 'apple'];
         const html = document.documentElement;
-
         const savedMode = localStorage.getItem('colorMode');
-
-        let currentTheme;
-
-        currentTheme = themes[Math.floor(Math.random() * themes.length)];
-
-        localStorage.setItem('brandTheme', currentTheme);
-
-        if (currentTheme !== 'default') {
-          html.classList.add(`theme-${currentTheme}`);
-        }
 
         if (savedMode) {
           html.classList.toggle('dark', savedMode === 'dark');
@@ -50,141 +38,6 @@
         background: linear-gradient(135deg, #1e3a8a 0%, #312e81 100%);
       }
 
-      .theme-xbox .gradient-bg {
-        background: linear-gradient(135deg, #107c10 0%, #0e7a0d 100%);
-      }
-      .theme-xbox.dark .gradient-bg {
-        background: linear-gradient(135deg, #0d5d0d 0%, #0a4b0a 100%);
-      }
-
-      .theme-playstation .gradient-bg {
-        background: linear-gradient(135deg, #0070d1 0%, #003791 100%);
-      }
-      .theme-playstation.dark .gradient-bg {
-        background: linear-gradient(135deg, #003791 0%, #002961 100%);
-      }
-
-      .theme-nintendo .gradient-bg {
-        background: linear-gradient(135deg, #e60012 0%, #b8000e 100%);
-      }
-      .theme-nintendo.dark .gradient-bg {
-        background: linear-gradient(135deg, #b8000e 0%, #8a000a 100%);
-      }
-
-      .theme-apple .gradient-bg {
-        background: linear-gradient(
-          135deg,
-          rgba(245, 245, 247, 0.8) 0%,
-          rgba(229, 229, 234, 0.9) 50%,
-          rgba(245, 245, 247, 0.8) 100%
-        );
-        backdrop-filter: blur(20px);
-        position: relative;
-        overflow: hidden;
-      }
-      .theme-apple .gradient-bg::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: radial-gradient(
-            circle at 20% 30%,
-            rgba(255, 255, 255, 0.3) 0%,
-            transparent 50%
-          ),
-          radial-gradient(
-            circle at 80% 70%,
-            rgba(255, 255, 255, 0.2) 0%,
-            transparent 50%
-          ),
-          linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
-        animation: liquidMove 8s ease-in-out infinite;
-        pointer-events: none;
-      }
-      .theme-apple.dark .gradient-bg {
-        background: linear-gradient(
-          135deg,
-          rgba(29, 29, 31, 0.9) 0%,
-          rgba(44, 44, 46, 0.95) 50%,
-          rgba(29, 29, 31, 0.9) 100%
-        );
-        backdrop-filter: blur(20px);
-      }
-      .theme-apple.dark .gradient-bg::before {
-        background: radial-gradient(
-            circle at 20% 30%,
-            rgba(255, 255, 255, 0.1) 0%,
-            transparent 50%
-          ),
-          radial-gradient(
-            circle at 80% 70%,
-            rgba(255, 255, 255, 0.05) 0%,
-            transparent 50%
-          );
-      }
-      .theme-apple h1,
-      .theme-apple p {
-        color: #1d1d1f !important;
-      }
-      .theme-apple.dark h1,
-      .theme-apple.dark p {
-        color: #f5f5f7 !important;
-      }
-
-      /* Enhanced contrast for Apple light mode */
-      .theme-apple .bg-white\/20 {
-        background: rgba(255, 255, 255, 0.25) !important;
-        backdrop-filter: blur(15px);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
-          inset 0 1px 0 rgba(255, 255, 255, 0.4);
-      }
-      .theme-apple .hover\:bg-white\/30:hover {
-        background: rgba(255, 255, 255, 0.35) !important;
-        transform: translateY(-1px);
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15),
-          inset 0 1px 0 rgba(255, 255, 255, 0.5);
-      }
-      .theme-apple .text-white {
-        color: #1d1d1f !important;
-      }
-      .theme-apple .text-white\/80 {
-        color: #424245 !important;
-      }
-      .theme-apple .text-white\/60 {
-        color: #6e6e73 !important;
-      }
-      .theme-apple .bg-white\/90 {
-        background: rgba(255, 255, 255, 0.15) !important;
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
-          inset 0 1px 0 rgba(255, 255, 255, 0.3),
-          inset 0 -1px 0 rgba(0, 0, 0, 0.05);
-      }
-      .theme-apple .text-gray-800 {
-        color: #1d1d1f !important;
-        text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
-      }
-
-      /* Social media icons contrast for Apple light mode */
-      .theme-apple .bg-white\/20.dark\:bg-black\/20 {
-        background: rgba(255, 255, 255, 0.2) !important;
-        backdrop-filter: blur(15px);
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1),
-          inset 0 1px 0 rgba(255, 255, 255, 0.3);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-      .theme-apple .bg-white\/20.dark\:bg-black\/20:hover {
-        background: rgba(255, 255, 255, 0.3) !important;
-        transform: translateY(-2px) scale(1.05);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15),
-          inset 0 1px 0 rgba(255, 255, 255, 0.4);
-      }
-
       .link-hover {
         transition: all 0.3s ease;
       }
@@ -195,34 +48,7 @@
       .dark .link-hover:hover {
         box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
       }
-      .theme-apple .link-hover:hover {
-        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15),
-          inset 0 1px 0 rgba(255, 255, 255, 0.4);
-        backdrop-filter: blur(25px);
-        border-color: rgba(255, 255, 255, 0.4);
-        transform: translateY(-3px) scale(1.02);
-      }
-      .theme-apple .link-hover {
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      }
 
-      /* Apple theme highlight link liquid glass effect */
-      .theme-apple .highlight-link {
-        background: linear-gradient(
-          135deg,
-          rgba(251, 191, 36, 0.9) 0%,
-          rgba(245, 158, 11, 0.95) 100%
-        );
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        box-shadow: 0 12px 32px rgba(251, 191, 36, 0.3),
-          inset 0 1px 0 rgba(255, 255, 255, 0.4);
-      }
-      .theme-apple .highlight-link:hover {
-        box-shadow: 0 20px 50px rgba(251, 191, 36, 0.4),
-          inset 0 1px 0 rgba(255, 255, 255, 0.5);
-        backdrop-filter: blur(25px);
-      }
       .highlight-link {
         background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
         border: 2px solid #fbbf24;
@@ -256,81 +82,9 @@
           transform: translateX(100%) translateY(100%) rotate(45deg);
         }
       }
-      @keyframes liquidMove {
-        0%,
-        100% {
-          transform: translateX(0%) translateY(0%) scale(1);
-        }
-        25% {
-          transform: translateX(5%) translateY(-3%) scale(1.02);
-        }
-        50% {
-          transform: translateX(-3%) translateY(4%) scale(0.98);
-        }
-        75% {
-          transform: translateX(4%) translateY(-2%) scale(1.01);
-        }
-      }
       .highlight-link .highlight-text {
         font-weight: 700;
         color: white;
-      }
-
-      .theme-selector {
-        position: relative;
-      }
-      .theme-dropdown {
-        position: absolute;
-        top: 100%;
-        right: 0;
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
-        border-radius: 8px;
-        padding: 8px;
-        min-width: 150px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-        z-index: 10;
-        opacity: 0;
-        visibility: hidden;
-        transform: translateY(-10px);
-        transition: all 0.3s ease;
-      }
-      .dark .theme-dropdown {
-        background: rgba(0, 0, 0, 0.95);
-      }
-      .theme-apple .theme-dropdown {
-        background: rgba(255, 255, 255, 0.2);
-        backdrop-filter: blur(100px);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15),
-          inset 0 1px 0 rgba(255, 255, 255, 0.4);
-      }
-      .theme-dropdown.show {
-        opacity: 1;
-        visibility: visible;
-        transform: translateY(0);
-      }
-      .theme-option {
-        display: block;
-        width: 100%;
-        padding: 8px 12px;
-        border: none;
-        background: transparent;
-        text-align: left;
-        border-radius: 4px;
-        cursor: pointer;
-        color: #1f2937;
-        font-size: 14px;
-        transition: background 0.2s ease;
-      }
-      .dark .theme-option {
-        color: #f9fafb;
-      }
-      .theme-option:hover {
-        background: rgba(0, 0, 0, 0.1);
-      }
-      .dark .theme-option:hover {
-        background: rgba(255, 255, 255, 0.1);
       }
     </style>
   </head>
@@ -339,28 +93,6 @@
   >
     <div class="container mx-auto px-4 py-8 max-w-md">
       <div class="flex justify-end gap-2 mb-6">
-        <div class="theme-selector">
-          <button
-            id="themeSelector"
-            class="p-2 rounded-full bg-white/20 dark:bg-black/20 text-white hover:bg-white/30 dark:hover:bg-black/30 transition-all duration-300"
-            aria-label="Select theme"
-          >
-            <i class="fas fa-palette text-lg"></i>
-          </button>
-          <div id="themeDropdown" class="theme-dropdown">
-            <button class="theme-option" data-theme="default">
-              🎨 Default
-            </button>
-            <button class="theme-option" data-theme="xbox">🎮 Xbox</button>
-            <button class="theme-option" data-theme="playstation">
-              🎯 PlayStation
-            </button>
-            <button class="theme-option" data-theme="nintendo">
-              🍄 Nintendo
-            </button>
-            <button class="theme-option" data-theme="apple">🍎 Apple</button>
-          </div>
-        </div>
         <button
           id="themeToggle"
           class="p-2 rounded-full bg-white/20 dark:bg-black/20 text-white hover:bg-white/30 dark:hover:bg-black/30 transition-all duration-300"
@@ -482,45 +214,11 @@
     </div>
 
     <script>
-      let themeToggle, themeSelector, themeDropdown;
+      let themeToggle;
       const html = document.documentElement;
-      const themes = ['default', 'xbox', 'playstation', 'nintendo', 'apple'];
-
-      function applyBrandTheme(theme) {
-        themes.forEach((t) => {
-          if (t !== 'default') {
-            html.classList.remove(`theme-${t}`);
-          }
-        });
-
-        if (theme !== 'default') {
-          html.classList.add(`theme-${theme}`);
-        }
-
-        localStorage.setItem('brandTheme', theme);
-      }
 
       document.addEventListener('DOMContentLoaded', function () {
         themeToggle = document.getElementById('themeToggle');
-        themeSelector = document.getElementById('themeSelector');
-        themeDropdown = document.getElementById('themeDropdown');
-
-        themeSelector.addEventListener('click', (e) => {
-          e.stopPropagation();
-          themeDropdown.classList.toggle('show');
-        });
-
-        document.addEventListener('click', () => {
-          themeDropdown.classList.remove('show');
-        });
-
-        themeDropdown.addEventListener('click', (e) => {
-          if (e.target.classList.contains('theme-option')) {
-            const selectedTheme = e.target.dataset.theme;
-            applyBrandTheme(selectedTheme);
-            themeDropdown.classList.remove('show');
-          }
-        });
 
         themeToggle.addEventListener('click', () => {
           html.classList.toggle('dark');
