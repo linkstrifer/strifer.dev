@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -14,13 +14,78 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
+    <script>
+      (function () {
+        const themes = ['default', 'xbox', 'playstation', 'nintendo', 'apple'];
+        const html = document.documentElement;
+
+        const savedMode = localStorage.getItem('colorMode');
+
+        let currentTheme;
+
+        currentTheme = themes[Math.floor(Math.random() * themes.length)];
+
+        localStorage.setItem('brandTheme', currentTheme);
+
+        if (currentTheme !== 'default') {
+          html.classList.add(`theme-${currentTheme}`);
+        }
+
+        if (savedMode) {
+          html.classList.toggle('dark', savedMode === 'dark');
+        } else {
+          const prefersDark = window.matchMedia(
+            '(prefers-color-scheme: dark)'
+          ).matches;
+          html.classList.toggle('dark', prefersDark);
+        }
+      })();
+    </script>
     <style>
       .gradient-bg {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        transition: background 0.5s ease;
       }
       .dark .gradient-bg {
         background: linear-gradient(135deg, #1e3a8a 0%, #312e81 100%);
       }
+
+      .theme-xbox .gradient-bg {
+        background: linear-gradient(135deg, #107c10 0%, #0e7a0d 100%);
+      }
+      .theme-xbox.dark .gradient-bg {
+        background: linear-gradient(135deg, #0d5d0d 0%, #0a4b0a 100%);
+      }
+
+      .theme-playstation .gradient-bg {
+        background: linear-gradient(135deg, #0070d1 0%, #003791 100%);
+      }
+      .theme-playstation.dark .gradient-bg {
+        background: linear-gradient(135deg, #003791 0%, #002961 100%);
+      }
+
+      .theme-nintendo .gradient-bg {
+        background: linear-gradient(135deg, #e60012 0%, #b8000e 100%);
+      }
+      .theme-nintendo.dark .gradient-bg {
+        background: linear-gradient(135deg, #b8000e 0%, #8a000a 100%);
+      }
+
+      .theme-apple .gradient-bg {
+        background: linear-gradient(135deg, #f5f5f7 0%, #e5e5ea 100%);
+      }
+      .theme-apple.dark .gradient-bg {
+        background: linear-gradient(135deg, #1d1d1f 0%, #2c2c2e 100%);
+      }
+      .theme-apple h1,
+      .theme-apple p {
+        color: #1d1d1f !important;
+      }
+      .theme-apple.dark h1,
+      .theme-apple.dark p {
+        color: #f5f5f7 !important;
+      }
+
       .link-hover {
         transition: all 0.3s ease;
       }
@@ -68,14 +133,85 @@
         font-weight: 700;
         color: white;
       }
+
+      .theme-selector {
+        position: relative;
+      }
+      .theme-dropdown {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 8px;
+        padding: 8px;
+        min-width: 150px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        z-index: 10;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+      }
+      .dark .theme-dropdown {
+        background: rgba(0, 0, 0, 0.95);
+      }
+      .theme-dropdown.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+      }
+      .theme-option {
+        display: block;
+        width: 100%;
+        padding: 8px 12px;
+        border: none;
+        background: transparent;
+        text-align: left;
+        border-radius: 4px;
+        cursor: pointer;
+        color: #1f2937;
+        font-size: 14px;
+        transition: background 0.2s ease;
+      }
+      .dark .theme-option {
+        color: #f9fafb;
+      }
+      .theme-option:hover {
+        background: rgba(0, 0, 0, 0.1);
+      }
+      .dark .theme-option:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
     </style>
   </head>
   <body
     class="min-h-screen gradient-bg transition-all duration-300 flex items-center"
   >
     <div class="container mx-auto px-4 py-8 max-w-md">
-      <!-- Theme Toggle -->
-      <div class="flex justify-end mb-6">
+      <div class="flex justify-end gap-2 mb-6">
+        <div class="theme-selector">
+          <button
+            id="themeSelector"
+            class="p-2 rounded-full bg-white/20 dark:bg-black/20 text-white hover:bg-white/30 dark:hover:bg-black/30 transition-all duration-300"
+            aria-label="Select theme"
+          >
+            <i class="fas fa-palette text-lg"></i>
+          </button>
+          <div id="themeDropdown" class="theme-dropdown">
+            <button class="theme-option" data-theme="default">
+              🎨 Default
+            </button>
+            <button class="theme-option" data-theme="xbox">🎮 Xbox</button>
+            <button class="theme-option" data-theme="playstation">
+              🎯 PlayStation
+            </button>
+            <button class="theme-option" data-theme="nintendo">
+              🍄 Nintendo
+            </button>
+            <button class="theme-option" data-theme="apple">🍎 Apple</button>
+          </div>
+        </div>
         <button
           id="themeToggle"
           class="p-2 rounded-full bg-white/20 dark:bg-black/20 text-white hover:bg-white/30 dark:hover:bg-black/30 transition-all duration-300"
@@ -86,7 +222,6 @@
         </button>
       </div>
 
-      <!-- Profile Section -->
       <div class="text-center mb-8">
         <div
           class="w-24 h-24 mx-auto mb-4 bg-white/20 dark:bg-black/20 rounded-full flex items-center justify-center"
@@ -98,7 +233,6 @@
           Desarrollador y Creador de Contenido.
         </p>
 
-        <!-- Social Media Icons -->
         <div class="flex justify-center space-x-4 mb-6">
           <a
             href="https://youtube.com/@linkstrifer1"
@@ -130,7 +264,6 @@
         </div>
       </div>
 
-      <!-- Links Section -->
       <div class="space-y-4">
         <a
           href="https://productos.strifer.link/"
@@ -190,39 +323,66 @@
         </a>
       </div>
 
-      <!-- Footer -->
       <div class="text-center mt-8 text-white/60 text-xs">
         <p>&copy; 2025 LinkStrifer. Todos los derechos reservados.</p>
       </div>
     </div>
 
     <script>
-      const themeToggle = document.getElementById('themeToggle');
+      let themeToggle, themeSelector, themeDropdown;
       const html = document.documentElement;
+      const themes = ['default', 'xbox', 'playstation', 'nintendo', 'apple'];
 
-      const savedTheme = localStorage.getItem('theme');
-      if (savedTheme) {
-        html.classList.toggle('dark', savedTheme === 'dark');
-      } else {
-        const prefersDark = window.matchMedia(
-          '(prefers-color-scheme: dark)'
-        ).matches;
-        html.classList.toggle('dark', prefersDark);
-      }
-
-      themeToggle.addEventListener('click', () => {
-        html.classList.toggle('dark');
-        const isDark = html.classList.contains('dark');
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-      });
-
-      window
-        .matchMedia('(prefers-color-scheme: dark)')
-        .addEventListener('change', (e) => {
-          if (!localStorage.getItem('theme')) {
-            html.classList.toggle('dark', e.matches);
+      function applyBrandTheme(theme) {
+        themes.forEach((t) => {
+          if (t !== 'default') {
+            html.classList.remove(`theme-${t}`);
           }
         });
+
+        if (theme !== 'default') {
+          html.classList.add(`theme-${theme}`);
+        }
+
+        localStorage.setItem('brandTheme', theme);
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        themeToggle = document.getElementById('themeToggle');
+        themeSelector = document.getElementById('themeSelector');
+        themeDropdown = document.getElementById('themeDropdown');
+
+        themeSelector.addEventListener('click', (e) => {
+          e.stopPropagation();
+          themeDropdown.classList.toggle('show');
+        });
+
+        document.addEventListener('click', () => {
+          themeDropdown.classList.remove('show');
+        });
+
+        themeDropdown.addEventListener('click', (e) => {
+          if (e.target.classList.contains('theme-option')) {
+            const selectedTheme = e.target.dataset.theme;
+            applyBrandTheme(selectedTheme);
+            themeDropdown.classList.remove('show');
+          }
+        });
+
+        themeToggle.addEventListener('click', () => {
+          html.classList.toggle('dark');
+          const isDark = html.classList.contains('dark');
+          localStorage.setItem('colorMode', isDark ? 'dark' : 'light');
+        });
+
+        window
+          .matchMedia('(prefers-color-scheme: dark)')
+          .addEventListener('change', (e) => {
+            if (!localStorage.getItem('colorMode')) {
+              html.classList.toggle('dark', e.matches);
+            }
+          });
+      });
     </script>
   </body>
 </html>
