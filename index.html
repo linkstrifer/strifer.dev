@@ -131,6 +131,117 @@
         }
       }
 
+      /* Floating blobs background */
+      .bg-anim {
+        position: fixed;
+        inset: 0;
+        z-index: 1; /* above liquid-bg::before, below content */
+        pointer-events: none;
+        overflow: hidden;
+      }
+      .blob {
+        position: absolute;
+        width: 60vmax;
+        aspect-ratio: 1 / 1;
+        opacity: 0.35;
+        border-radius: 999px;
+        background: radial-gradient(
+          closest-side,
+          rgba(96, 165, 250, 0.75),
+          rgba(96, 165, 250, 0) 70%
+        );
+        will-change: transform;
+        transform: translate3d(0, 0, 0) scale(1);
+      }
+      .dark .blob {
+        opacity: 0.25;
+      }
+      .blob-1 {
+        top: -12vmax;
+        left: -10vmax;
+        animation: float-a 16s ease-in-out infinite alternate;
+      }
+      .blob-2 {
+        right: -14vmax;
+        bottom: -12vmax;
+        background: radial-gradient(
+          closest-side,
+          rgba(167, 139, 250, 0.7),
+          rgba(167, 139, 250, 0) 70%
+        );
+        animation: float-b 18s ease-in-out 1.2s infinite alternate;
+      }
+      .blob-3 {
+        top: 18vmax;
+        right: 10vmax;
+        background: radial-gradient(
+          closest-side,
+          rgba(34, 211, 238, 0.65),
+          rgba(34, 211, 238, 0) 70%
+        );
+        animation: float-c 20s ease-in-out 0.6s infinite alternate;
+      }
+      .blob-4 {
+        left: 8vmax;
+        bottom: 8vmax;
+        width: 50vmax;
+        background: radial-gradient(
+          closest-side,
+          rgba(99, 102, 241, 0.6),
+          rgba(99, 102, 241, 0) 70%
+        );
+        animation: float-d 24s ease-in-out 0.9s infinite alternate;
+      }
+      @keyframes float-a {
+        0% {
+          transform: translate3d(0, 0, 0) scale(1);
+        }
+        50% {
+          transform: translate3d(10vmax, 4vmax, 0) scale(1.08);
+        }
+        100% {
+          transform: translate3d(4vmax, 14vmax, 0) scale(1.04);
+        }
+      }
+      @keyframes float-b {
+        0% {
+          transform: translate3d(0, 0, 0) scale(1.04);
+        }
+        50% {
+          transform: translate3d(-9vmax, -7vmax, 0) scale(1.1);
+        }
+        100% {
+          transform: translate3d(-3vmax, -14vmax, 0) scale(1.06);
+        }
+      }
+      @keyframes float-c {
+        0% {
+          transform: translate3d(0, 0, 0) scale(1);
+        }
+        50% {
+          transform: translate3d(-8vmax, 10vmax, 0) scale(1.06);
+        }
+        100% {
+          transform: translate3d(-14vmax, 2vmax, 0) scale(1.03);
+        }
+      }
+      @keyframes float-d {
+        0% {
+          transform: translate3d(0, 0, 0) scale(0.98);
+        }
+        50% {
+          transform: translate3d(6vmax, -6vmax, 0) scale(1.08);
+        }
+        100% {
+          transform: translate3d(2vmax, -12vmax, 0) scale(1.04);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .blob {
+          animation: none !important;
+        }
+      }
+
       /* Glass primitives */
       .glass {
         background: var(--glass-bg);
@@ -369,6 +480,12 @@
   <body
     class="min-h-screen liquid-bg transition-all duration-300 flex items-center"
   >
+    <div class="bg-anim" aria-hidden="true">
+      <span class="blob blob-1"></span>
+      <span class="blob blob-2"></span>
+      <span class="blob blob-3"></span>
+      <span class="blob blob-4"></span>
+    </div>
     <div class="container mx-auto px-4 py-8 max-w-md relative z-10">
       <div class="flex justify-end gap-2 mb-6">
         <button
